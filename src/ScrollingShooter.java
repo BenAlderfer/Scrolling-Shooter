@@ -1,14 +1,7 @@
-import static java.lang.Character.toUpperCase;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import javax.sound.sampled.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,15 +9,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import static java.lang.Character.toUpperCase;
 
 /**
  * Copyright (c) 2015 Ben Alderfer
@@ -38,7 +23,7 @@ import javax.swing.Timer;
 public class ScrollingShooter extends JPanel implements KeyListener, MouseListener
 {	
 	private final int PIECE_SIZE = 30;		//the standard size of a Piece
-	
+	protected Player player;                //the player
 	private boolean[] keys;					//the keys pressed down
 	private BufferedImage back;				//the previous image, used for double buffering
 	private ArrayList<ArrayList> arrays = new ArrayList<ArrayList>();			//all the arrays that scroll and do not replace themselves
@@ -54,8 +39,7 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
 	private ArrayList<ImageItem> swordPlatform = new ArrayList<ImageItem>();	//the Pieces that make up the mini game to get the sword, 0 is boost, last is sword
 	private ArrayList<ImageItem> spikes = new ArrayList<ImageItem>();			//spikes
 	private ArrayList<ImageItem> powerUps = new ArrayList<ImageItem>();			//power ups, health boosts or shields
-	private ImageItem gunDrop = null;		//the ray gun dropped by a Golem		
-	protected Player player;				//the player
+	private ImageItem gunDrop = null;        //the ray gun dropped by a Golem
 	private int kills = 100;						//how many kills
 	private int score;						//the game score
 	private int swordTries = 2;				//how many tries the player has to get the sword
@@ -604,7 +588,7 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
 	 
 	 g2.drawString("Score: " + score, 28, 25);  	 					//score  
 	 g2.drawString("Health: " + player.getHealth(), 250, 25);  			//health
-	 g2.drawString("Lifeline®: " + player.getLifeline(), 475, 25);		//lifeline (gives the player more time to collect health)
+	   g2.drawString("Lifeline: " + player.getLifeline(), 475, 25);        //lifeline (gives the player more time to collect health)
 	 g2.drawString("Kills: " + kills, 725, 25); 						//kills
 	 g2.drawString("Ammo: " + player.getAmmo(), 900, 25);				//bullets
    }
@@ -799,7 +783,7 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
    private void makeEnemies()
    {
 	   if ((int) (Math.random() * 75) == 1)						// 1.333% chance of making a Rogue
-		   enemies.add(new Rogue(bottomWalls.get(bottomWalls.size() - 1).getX() + 2 * PIECE_SIZE, frame.getHeight() / 2, PIECE_SIZE, (int) (2 * PIECE_SIZE)));	
+		   enemies.add(new Rogue(bottomWalls.get(bottomWalls.size() - 1).getX() + 2 * PIECE_SIZE, frame.getHeight() / 2, PIECE_SIZE, 2 * PIECE_SIZE));
 
 	   else if ((int) (Math.random() * 100) == 1)				// 1% chance of making a Robot
 		   enemies.add(new Robot(bottomWalls.get(bottomWalls.size() - 1).getX() + 2 * PIECE_SIZE, frame.getHeight() / 2, (int) (1.3 * PIECE_SIZE), (int) (2.7 * PIECE_SIZE)));	
@@ -909,7 +893,7 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
 	  swordPlatform.add(new ImageItem(bottomWalls.get(bottomWalls.size() - 1).getX() + 2 * PIECE_SIZE, frame.getHeight() / 2, PIECE_SIZE, PIECE_SIZE, "Pictures/boostBlock.png"));	//x, y, width, height, path
 	  
 	  //first floating Piece, needs special placement for boost to work
-	  swordPlatform.add(new ImageItem(swordPlatform.get(0).getX() + 15, (int) (frame.getHeight() / 3), PIECE_SIZE, 5, "Pictures/redBlock.png"));
+	   swordPlatform.add(new ImageItem(swordPlatform.get(0).getX() + 15, frame.getHeight() / 3, PIECE_SIZE, 5, "Pictures/redBlock.png"));
 	  
 	  //rest of floating Pieces
 	  for (int i = 1; i <= 6; i++)
@@ -1106,13 +1090,13 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
 				 ((Piece) x).setY(((Piece) x).getY() - 2);
 			   
 		 for (Piece x : topWalls)
-			 x.setY(((Piece) x).getY() - 2);
+			 x.setY(x.getY() - 2);
 		 
 		 for (Piece x : bottomWalls)
-			 x.setY(((Piece) x).getY() - 2);
+			 x.setY(x.getY() - 2);
 			   
 		 for (Piece x : enemies)
-			 x.setY(((Piece) x).getY() - 2);
+			 x.setY(x.getY() - 2);
 			   
 		 player.setY(player.getY() - 2);  
 		   
@@ -1125,13 +1109,13 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
 		   ((Piece) x).setY(((Piece) x).getY() + 2);
 			   
 		 for (Piece x : topWalls)
-			 x.setY(((Piece) x).getY() + 2);
+			 x.setY(x.getY() + 2);
 			   
 		 for (Piece x : bottomWalls)
-			 x.setY(((Piece) x).getY() + 2);
+			 x.setY(x.getY() + 2);
 			   
 		 for (Piece x : enemies)
-		  x.setY(((Piece) x).getY() + 2);
+			 x.setY(x.getY() + 2);
 			   
 		 player.setY(player.getY() + 2);
    }
@@ -1227,11 +1211,8 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
 			else
 				player.setWeapon("sword");
 		}
-		
-		if (keys[5])
-			player.isCrouched = true;
-		else
-			player.isCrouched = false;
+
+	   player.isCrouched = keys[5];
 		
 		if (keys[6])
 			player.setWeapon("gun");
@@ -1291,11 +1272,11 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
    {
 	   	graphToBack.setColor(randomColor());
 		graphToBack.setFont(g.getFont().deriveFont(200f));
-		graphToBack.drawString("FAILURE", (int) (frame.getWidth() / 4), (int) (frame.getHeight() / 2));
+	   graphToBack.drawString("FAILURE", frame.getWidth() / 4, frame.getHeight() / 2);
 		
 		if (!didSaveScores)			//so it only runs once
 		{
-			explosions.add(new ImageItem(player.getX() + (int) (.5 * player.getWidth()) - (int) (3 * PIECE_SIZE), player.getY() + (int) (.5 * player.getHeight()) - (int) (3 * PIECE_SIZE), 6 * PIECE_SIZE, 6 * PIECE_SIZE, "Pictures/explosions/exp1.png"));
+			explosions.add(new ImageItem(player.getX() + (int) (.5 * player.getWidth()) - 3 * PIECE_SIZE, player.getY() + (int) (.5 * player.getHeight()) - 3 * PIECE_SIZE, 6 * PIECE_SIZE, 6 * PIECE_SIZE, "Pictures/explosions/exp1.png"));
 			playerExplosionIndex = explosions.size() - 1;
 			
 			File file = new File("highscores.txt");
