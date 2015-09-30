@@ -1,8 +1,7 @@
-Copyright (c) 2015 Ben Alderfer
-See the file license.txt for copying permission.
+#Scrolling-Shooter
 
-Scrolling-Shooter
-=================
+Copyright (c) 2015 Benjamin Alderfer.
+See the license file for copying permission.
 
 A space themed scrolling shooter.
 
