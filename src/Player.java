@@ -1,4 +1,4 @@
-import java.awt.Graphics;
+import java.awt.*;
 
 /**
  * Copyright (c) 2015 Ben Alderfer
@@ -7,38 +7,50 @@ import java.awt.Graphics;
  * @author Ben Alderfer
  * The Player class
  */
-public class Player extends Being
-{	
-	//all the possible weapon types	
-	private final Weapon SWORD = new Weapon(getX() + getWidth(), getY(), 60, 50, "sword", "Pictures/Swords/sword2.png");					//x, y, width, height, name, path
-	private final Weapon KNIFE = new Weapon(getX() + getWidth(), getY() + 10, 30, 25, "knife", "Pictures/knife.png");						//x, y, width, height, name, path
-	private final Weapon GUN = new Weapon(getX() + getWidth(), getY() + 10, 39, 25, "gun", "Pictures/gun3.png");							//x, y, width, height, name, path
-	private final Weapon RAYGUN = new Weapon(getX() + getWidth(), getY() + 10, 39, 25, "raygun", "Pictures/raygun.png");						//x, y, width, height, name, path
-	private final ImageItem SHIELD = new ImageItem(getX() - 20, getY() - 10, getWidth() + 40, getHeight() + 20, "Pictures/orb.png");		//x, y, width, height, name, path
-	private static final int JUMP_HEIGHT = 25;			//how high the player jumps each run
-	
-	private String name;					//the Player's name
-	private int maxHealth;					//the max health of the player
-	private int knifeDelay = -1;			//delays the switch back to gun so the knife shows
-	private int poisonTimer = -1;			//the duration of poison remaining
-	public int jumpDelay = 0;				//delay between jumps
-	public int jumps;						//the number of times the player has jumped (max 2)
-	public int jumpingTime;					//the duration the player will go up (breaks up jump to look smoother)
-	public boolean hasSword = false;		//if the Player has picked up the sword
+public class Player extends Being {
+	private static final int JUMP_HEIGHT = (int) (ScrollingShooter.PIECE_SIZE * .83);                        //how high the player jumps each run
+
+	//all the possible weapon types
+	private final Weapon SWORD = new Weapon(getX() + getWidth(), getY(),
+			(int) (ScrollingShooter.PIECE_SIZE * 2),
+			(int) (ScrollingShooter.PIECE_SIZE * 1.67),
+			"sword", "Pictures/Swords/sword2.png");                                                        //x, y, width, height, name, path
+	private final Weapon KNIFE = new Weapon(getX() + getWidth(), getY() + ScrollingShooter.PIECE_SIZE / 3,
+			ScrollingShooter.PIECE_SIZE, (int) (ScrollingShooter.PIECE_SIZE * .83),
+			"knife", "Pictures/knife.png");                                                                //x, y, width, height, name, path
+	private final Weapon GUN = new Weapon(getX() + getWidth(), getY() + ScrollingShooter.PIECE_SIZE / 3,
+			(int) (ScrollingShooter.PIECE_SIZE * 1.3), (int) (ScrollingShooter.PIECE_SIZE * .83),
+			"gun", "Pictures/gun3.png");                                                                    //x, y, width, height, name, path
+	private final Weapon RAYGUN = new Weapon(getX() + getWidth(), getY() + ScrollingShooter.PIECE_SIZE / 3,
+			(int) (ScrollingShooter.PIECE_SIZE * 1.3), (int) (ScrollingShooter.PIECE_SIZE * .83),
+			"raygun", "Pictures/raygun.png");                                                                //x, y, width, height, name, path
+	private final ImageItem SHIELD = new ImageItem(getX() - (int) (ScrollingShooter.PIECE_SIZE * .66),
+			getY() - ScrollingShooter.PIECE_SIZE / 3,
+			getWidth() + (int) (ScrollingShooter.PIECE_SIZE * 1.33),
+			getHeight() + (int) (ScrollingShooter.PIECE_SIZE * .66), "Pictures/orb.png");                    //x, y, width, height, name, path
+
+	public int jumpDelay = 0;                //delay between jumps
+	public int jumps;                        //the number of times the player has jumped (max 2)
+	public int jumpingTime;                    //the duration the player will go up (breaks up jump to look smoother)
+	public boolean hasSword = false;        //if the Player has picked up the sword
 	public boolean hasRayGun = false;		//if the Player has picked up the ray gun
 	public boolean isPoisoned = false;		//if the Player is poisoned
 	public boolean isCrouched = false;		//if the Player is crouching
 	public boolean isKnockedUp = false;		//if the Player has been knocked up by a Golem
 	public boolean isDead = false;			//if the Player is dead
-	private Weapon playerWeapon = GUN;		//the player's weapon, default = gun
+	public int fireDelay = 10;                //the space in between each shot
+	private String name;                    //the Player's name
+	private int maxHealth;                    //the max health of the player
+	private int knifeDelay = -1;            //delays the switch back to gun so the knife shows
+	private int poisonTimer = -1;            //the duration of poison remaining
+	private Weapon playerWeapon = GUN;        //the player's weapon, default = gun
 	private ImageItem shield = null;		//the player's shield, only blocks bullets and explosions, default = null
 	private int shieldHealth;				//how much health the shield has
 	private int bullets = 1;				//how many bullets are available, used in the normal gun
 	private int rays;						//how many rays are left for the ray gun
 	private int bulletTimer;				//timer to delay getting another bullet
-	private int lifeline = 1;				//the player's lifeline
-	public int fireDelay = 10;				//the space in between each shot
-	private Weapon lastGun = GUN;			//the last weapon equipped, saves which gun so it switches back after knifing
+	private int lifeline = 1;                //the player's lifeline
+	private Weapon lastGun = GUN;            //the last weapon equipped, saves which gun so it switches back after knifing
 	
 	/**
 	 * Default constructor
@@ -67,20 +79,24 @@ public class Player extends Being
 	}
 	
 	/**
-	 * Sets the Player's name
-	 * @param n the name
-	 */
-	public void setName(String n)
-		{name = n;}
-	
-	/**
+
 	 * Returns the Player's name
 	 * @return name the name
 	 */
 	public String getName()
 		{return name;}
-	
+
 	/**
+
+	 * Sets the Player's name
+	 * @param n the name
+	 */
+	public void setName(String n) {
+		name = n;
+	}
+
+	/**
+
 	 * Sets the maximum health
 	 * @param mh the max health
 	 */
@@ -114,6 +130,16 @@ public class Player extends Being
 	}
 	
 	/**
+
+	 * Returns the Player's weapon
+	 * @return playerWeapon the player's weapon
+	 */
+	public Weapon getWeapon() {
+		return playerWeapon;
+	}
+
+	/**
+
 	 * Sets the Player's weapon
 	 * @param weaponType the type of the new weapon
 	 */
@@ -121,7 +147,7 @@ public class Player extends Being
 	{
 		if (playerWeapon.getWeaponName().equals("gun") || playerWeapon.getWeaponName().equals("raygun"))		//saves the last gun used so it switches back properly after knifing
 			lastGun = playerWeapon;
-		
+
 		switch (weaponType)
 		{
 			case "gun" : playerWeapon = GUN; break;
@@ -129,19 +155,13 @@ public class Player extends Being
 			case "knife" : playerWeapon = KNIFE; knifeDelay = 5; break;
 			case "sword" : playerWeapon = SWORD; knifeDelay = 5; break;
 		}
-		
+
 		if (weaponType.equals("gun") || weaponType.equals("raygun"))			//if the new weapon is a gun, the last weapon becomes the same thing so it doesn't switch to last gun
 			lastGun = playerWeapon;
 	}
-	
+
 	/**
-	 * Returns the Player's weapon
-	 * @return playerWeapon the player's weapon
-	 */
-	public Weapon getWeapon()
-		{return playerWeapon;}
-	
-	/**
+
 	 * Returns the last or current gun the player equipped
 	 * @return lastGun the last or current gun the player equipped
 	 */

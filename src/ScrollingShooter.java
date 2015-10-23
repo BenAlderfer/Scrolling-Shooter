@@ -20,12 +20,11 @@ import static java.lang.Character.toUpperCase;
  * Does the graphics part of the game
  */
 @SuppressWarnings({ "rawtypes", "serial"})
-public class ScrollingShooter extends JPanel implements KeyListener, MouseListener
-{	
-	private final int PIECE_SIZE = 30;		//the standard size of a Piece
-	protected Player player;                //the player
-	private boolean[] keys;					//the keys pressed down
-	private BufferedImage back;				//the previous image, used for double buffering
+public class ScrollingShooter extends JPanel implements KeyListener, MouseListener {
+	protected static final int PIECE_SIZE = 60;    //the standard size of a Piece
+	protected Player player;                    //the player
+	private boolean[] keys;                        //the keys pressed down
+	private BufferedImage back;                    //the previous image, used for double buffering
 	private ArrayList<ArrayList> arrays = new ArrayList<ArrayList>();			//all the arrays that scroll and do not replace themselves
 	private ArrayList<ImageItem> topWalls = new ArrayList<ImageItem>();			//top wall border
 	private ArrayList<ImageItem> bottomWalls = new ArrayList<ImageItem>();		//bottom wall border
@@ -39,8 +38,8 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
 	private ArrayList<ImageItem> swordPlatform = new ArrayList<ImageItem>();	//the Pieces that make up the mini game to get the sword, 0 is boost, last is sword
 	private ArrayList<ImageItem> spikes = new ArrayList<ImageItem>();			//spikes
 	private ArrayList<ImageItem> powerUps = new ArrayList<ImageItem>();			//power ups, health boosts or shields
-	private ImageItem gunDrop = null;        //the ray gun dropped by a Golem
-	private int kills = 100;						//how many kills
+	private ImageItem gunDrop = null;       //the ray gun dropped by a Golem
+	private int kills = 100;                //how many kills
 	private int score;						//the game score
 	private int swordTries = 2;				//how many tries the player has to get the sword
 	private int numHoverBots;				//the number of HoverBots on the screen (max 2)
@@ -51,7 +50,7 @@ public class ScrollingShooter extends JPanel implements KeyListener, MouseListen
 	private Clip music;						//the music clip, used to play sound
 	private int loopCount = 1;				//how many times the music will loop, increases as the game runs so it doesn't stop
 	private int numGolems;					//how many Golems are on the screen, max = 1
-	private int playerExplosionIndex = -1;		//keeps track of which explosion was the player so it won't scroll and will remove player at end
+	private int playerExplosionIndex = -1;    //keeps track of which explosion was the player so it won't scroll and will remove player at end
 	
 	/**
 	 * Scrolling Shooter constructor
